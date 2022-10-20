@@ -2,15 +2,27 @@ import logo from "./1 - Pages Files/Logo.png";
 import styled from "styled-components";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export default function Login() {
-	const [email, setEmail] = useState("");
-	const [password, setPassword] = useState("");
+	const [loginEmail, setLoginEmail] = useState("");
+	const [loginPassword, setLoginPassword] = useState("");
+	const [validation, setValidation] = useState(false);
 	const navigate = useNavigate();
 
-	function handleSubmit() {
-        alert('sla')
-		// navigate("/register", { state: {} });
+	function handleSubmit(event) {
+		event.preventDefault();
+		const login = {
+			email: { loginEmail },
+			password: { loginPassword },
+		};
+		axios
+			.post(
+				"https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/login",
+				login
+			)
+			.then((e) => console.log(e))
+			.catch(() => setValidation(true));
 	}
 
 	return (
@@ -21,17 +33,20 @@ export default function Login() {
 					required
 					placeholder="email"
 					type="e-mail"
-					onChange={(e) => setEmail(e)}
+					onChange={(e) => setLoginEmail(e)}
 				/>
 				<input
 					required
 					placeholder="senha"
 					type="password"
-					onChange={(e) => setPassword(e)}
+					onChange={(e) => setLoginPassword(e)}
 				/>
 				<button type="submit">Entrar</button>
+				{validation && <h2>Autentificação Inválida</h2>}
 			</SyledForm>
-				<p onClick={()=> navigate("/register")}>Não tem uma conta? Cadastre-se!</p>
+			<p onClick={() => navigate("/register")}>
+				Não tem uma conta? Cadastre-se!
+			</p>
 		</LoginPage>
 	);
 }
@@ -53,7 +68,7 @@ const LoginPage = styled.div`
 		text-align: center;
 		text-decoration-line: underline;
 		color: #52b6ff;
-        cursor: pointer;
+		cursor: pointer;
 	}
 	@media (max-width: 360px) {
 		img {
@@ -65,6 +80,13 @@ const LoginPage = styled.div`
 const SyledForm = styled.form`
 	display: flex;
 	flex-direction: column;
+	margin-bottom: 25px;
+	h2 {
+		font-size: 13.976px;
+		line-height: 17px;
+		text-align: center;
+		color: red;
+	}
 	input {
 		height: 45px;
 		width: 300px;
@@ -87,7 +109,7 @@ const SyledForm = styled.form`
 	button {
 		width: 300px;
 		height: 45px;
-		margin: 3px 3px 25px 3px;
+		margin: 3px;
 		background: #52b6ff;
 		border-radius: 4.63636px;
 		border: none;

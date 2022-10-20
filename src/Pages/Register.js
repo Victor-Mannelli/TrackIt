@@ -2,16 +2,30 @@ import logo from "./1 - Pages Files/Logo.png";
 import styled from "styled-components";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export default function Register() {
-	const [email, setEmail] = useState("");
-	const [password, setPassword] = useState("");
-	const [name, setName] = useState("");
-	const [picture, setPicture] = useState("");
+	const [registrationEmail, setRegistrationEmail] = useState("");
+	const [registrationPassword, setRegistrationPassword] = useState("");
+	const [registrationName, setRegistrationName] = useState("");
+	const [registrationPicture, setRegistrationPicture] = useState("");
 	const navigate = useNavigate();
 
-	function handleSubmit() {
-		navigate("/", { state: { email, password, name, picture } });
+	function handleSubmit(event) {
+		event.preventDefault();
+		const registration = {
+			email: registrationEmail,
+			name: registrationName,
+			image: registrationPicture,
+			password: registrationPassword,
+		};
+		axios
+			.post(
+				"https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/sign-up",
+				registration
+			)
+			.then(() => navigate("/"))
+			.catch((e)=> console.log(e))
 	}
 
 	return (
@@ -22,27 +36,27 @@ export default function Register() {
 					required
 					placeholder="email"
 					type="e-mail"
-					onChange={(e) => setEmail(e)}
+					onChange={(e) => setRegistrationEmail(e)}
 				/>
 				<input
 					required
 					placeholder="senha"
 					type="password"
-					onChange={(e) => setPassword(e)}
+					onChange={(e) => setRegistrationPassword(e)}
 				/>
 				<input
 					required
 					placeholder="nome"
 					type="text"
-					onChange={(e) => setName(e)}
+					onChange={(e) => setRegistrationName(e)}
 				/>
 				<input
 					required
 					placeholder="foto"
 					type="url"
-					onChange={(e) => setPicture(e)}
+					onChange={(e) => setRegistrationPicture(e)}
 				/>
-				<button type="submit">Entrar</button>
+				<button type="submit">Cadastrar</button>
 			</SyledForm>
 			<p onClick={() => navigate("/")}>Já tem uma conta? Faça login!</p>
 		</RegisterPage>
@@ -66,7 +80,7 @@ const RegisterPage = styled.div`
 		text-align: center;
 		text-decoration-line: underline;
 		color: #52b6ff;
-        cursor: pointer;
+		cursor: pointer;
 	}
 	@media (max-width: 360px) {
 		img {
