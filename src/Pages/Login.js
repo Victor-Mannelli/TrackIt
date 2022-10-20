@@ -4,33 +4,34 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function Login() {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const navigate = useNavigate();
-    
+	const [email, setEmail] = useState("");
+	const [password, setPassword] = useState("");
+	const navigate = useNavigate();
+
 	function handleSubmit() {
-        navigate("/register", {state: {email, password}})
+        alert('sla')
+		// navigate("/register", { state: {} });
 	}
-    
+
 	return (
 		<LoginPage>
 			<img src={logo} alt=" " />
 			<SyledForm onSubmit={handleSubmit}>
-				<input 
-                    required 
-                    placeholder="email" 
-                    type="e-mail" 
-                    onChange={e => setEmail(e)}
-                />
-				<input 
-                    required 
-                    placeholder="senha" 
-                    type="password" 
-                    onChange={e => setPassword(e)}
-                />
+				<input
+					required
+					placeholder="email"
+					type="e-mail"
+					onChange={(e) => setEmail(e)}
+				/>
+				<input
+					required
+					placeholder="senha"
+					type="password"
+					onChange={(e) => setPassword(e)}
+				/>
 				<button type="submit">Entrar</button>
 			</SyledForm>
-			<p>Não tem uma conta? Cadastre-se!</p>
+				<p onClick={()=> navigate("/register")}>Não tem uma conta? Cadastre-se!</p>
 		</LoginPage>
 	);
 }
@@ -44,7 +45,7 @@ const LoginPage = styled.div`
 	img {
 		width: 250px;
 		height: 250px;
-        margin-bottom: 25px;
+		margin-bottom: 25px;
 	}
 	p {
 		font-size: 13.976px;
@@ -52,7 +53,7 @@ const LoginPage = styled.div`
 		text-align: center;
 		text-decoration-line: underline;
 		color: #52b6ff;
-        margin-top: 25px;
+        cursor: pointer;
 	}
 	@media (max-width: 360px) {
 		img {
@@ -86,7 +87,7 @@ const SyledForm = styled.form`
 	button {
 		width: 300px;
 		height: 45px;
-		margin: 3px;
+		margin: 3px 3px 25px 3px;
 		background: #52b6ff;
 		border-radius: 4.63636px;
 		border: none;
