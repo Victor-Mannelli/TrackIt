@@ -4,8 +4,8 @@ import axios from "axios";
 import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { ThreeDots } from "react-loader-spinner";
-import { toast } from "react-toastify";
 import UserContext from "../CreateContext";
+import { toast } from "react-toastify";
 
 export default function Login() {
 	const navigate = useNavigate();
@@ -31,7 +31,9 @@ export default function Login() {
 			})
 			.catch((e) => {
 				setLoading(false);
-				toast.error(e.response.data);
+				e.response.data.message === 'Usuário e/ou senha inválidos!' 
+				? toast.error(e.response.data.message, { position: "top-center" })
+				: toast.error(e.response.data.details[0], { position: "top-center" });
 			});
 	}
 	return (
