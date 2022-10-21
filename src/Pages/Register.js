@@ -1,64 +1,79 @@
 import logo from "./1 - Pages Files/Logo.png";
 import styled from "styled-components";
+import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import { ThreeDots } from "react-loader-spinner";
+import { toast } from "react-toastify";
 
 export default function Register() {
+	const navigate = useNavigate();
+
 	const [registrationEmail, setRegistrationEmail] = useState("");
 	const [registrationPassword, setRegistrationPassword] = useState("");
 	const [registrationName, setRegistrationName] = useState("");
 	const [registrationPicture, setRegistrationPicture] = useState("");
-	const navigate = useNavigate();
+	const [loading, setLoading] = useState(false);
 
-	function handleSubmit(event) {
+	function HandleSubmit(event) {
 		event.preventDefault();
+		setLoading(true);
 		const registration = {
 			email: registrationEmail,
 			name: registrationName,
 			image: registrationPicture,
-			password: registrationPassword,
-		};
+			password: registrationPassword
+		}
 		axios
 			.post(
 				"https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/sign-up",
 				registration
 			)
 			.then(() => navigate("/"))
-			.catch((e)=> console.log(e))
+			.catch((e) => {
+				setLoading(false)
+				toast.error(e.response.data.message, { position: "top-center" });
+			});
 	}
-
 	return (
 		<RegisterPage>
-			<img src={logo} alt=" " />
-			<SyledForm onSubmit={handleSubmit}>
+			<img src={logo} alt="" />
+			<SyledForm onSubmit={HandleSubmit}>
 				<input
 					required
 					placeholder="email"
 					type="e-mail"
-					onChange={(e) => setRegistrationEmail(e)}
+					disabled={loading}
+					onChange={(e) => setRegistrationEmail(e.target.value)}
 				/>
 				<input
 					required
 					placeholder="senha"
 					type="password"
-					onChange={(e) => setRegistrationPassword(e)}
+					disabled={loading}
+					onChange={(e) => setRegistrationPassword(e.target.value)}
 				/>
 				<input
 					required
 					placeholder="nome"
 					type="text"
-					onChange={(e) => setRegistrationName(e)}
+					disabled={loading}
+					onChange={(e) => setRegistrationName(e.target.value)}
 				/>
 				<input
 					required
 					placeholder="foto"
 					type="url"
-					onChange={(e) => setRegistrationPicture(e)}
+					disabled={loading}
+					onChange={(e) => setRegistrationPicture(e.target.value)}
 				/>
-				<button type="submit">Cadastrar</button>
+				<FormButton disabled={loading} type="submit">
+					{loading ? <ThreeDots color="white" /> : "Cadastrar"}
+				</FormButton>
 			</SyledForm>
-			<p onClick={() => navigate("/")}>Já tem uma conta? Faça login!</p>
+			<p onClick={() => !loading && navigate("/")}>
+				Já tem uma conta? Faça login!
+			</p>
 		</RegisterPage>
 	);
 }
@@ -69,6 +84,7 @@ const RegisterPage = styled.div`
 	align-items: center;
 	height: 100vh;
 	font-family: "Lexend Deca";
+	background-color: #525960;
 	img {
 		width: 250px;
 		height: 250px;
@@ -92,6 +108,7 @@ const RegisterPage = styled.div`
 const SyledForm = styled.form`
 	display: flex;
 	flex-direction: column;
+	margin-bottom: 25px;
 	input {
 		height: 45px;
 		width: 300px;
@@ -111,20 +128,34 @@ const SyledForm = styled.form`
 			line-height: 25px;
 		}
 	}
-	button {
-		width: 300px;
-		height: 45px;
-		margin: 3px 3px 25px 3px;
-		background: #52b6ff;
-		border-radius: 4.63636px;
-		border: none;
-
-		color: #ffffff;
-		font-size: 20.976px;
-		line-height: 26px;
+	h1 {
+		text-align: center;
+		color: red;
 	}
 	@media (max-width: 360px) {
-		input,
+		input {
+			width: 80vw;
+		}
+	}
+`;
+const FormButton = styled.button`
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+	width: 300px;
+	height: 45px;
+	margin: 3px;
+	background: #52b6ff;
+	border-radius: 4.63636px;
+	border: none;
+
+	color: #ffffff;
+	font-size: 20.976px;
+	line-height: 26px;
+	opacity: ${(props) => (props.disabled ? 0.8 : 1)};
+
+	@media (max-width: 360px) {
 		button {
 			width: 80vw;
 		}

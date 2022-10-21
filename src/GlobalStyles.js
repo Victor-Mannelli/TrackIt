@@ -55,6 +55,10 @@ const GlobalStyle = createGlobalStyle`
     * {
         box-sizing: border-box;
     }
+    :root {
+        --white-color: #ffffff;
+        --dark-mode: #525960;
+    }
 `
 
 export default GlobalStyle

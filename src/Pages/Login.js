@@ -1,50 +1,62 @@
 import logo from "./1 - Pages Files/Logo.png";
 import styled from "styled-components";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import { ThreeDots } from "react-loader-spinner";
+import { toast } from "react-toastify";
+import UserContext from "../CreateContext";
 
 export default function Login() {
+	const navigate = useNavigate();
+	const { setLoginInfo } = useContext(UserContext);
 	const [loginEmail, setLoginEmail] = useState("");
 	const [loginPassword, setLoginPassword] = useState("");
-	const [validation, setValidation] = useState(false);
-	const navigate = useNavigate();
+	const [loading, setLoading] = useState(false);
 
-	function handleSubmit(event) {
+	function HandleSubmit(event) {
 		event.preventDefault();
-		const login = {
-			email: { loginEmail },
-			password: { loginPassword },
-		};
+		setLoading(true);
 		axios
 			.post(
 				"https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/login",
-				login
+				{
+					email: loginEmail,
+					password: loginPassword,
+				}
 			)
-			.then((e) => console.log(e))
-			.catch(() => setValidation(true));
+			.then(({ data }) => {
+				setLoginInfo(data);
+				navigate("/today");
+			})
+			.catch((e) => {
+				setLoading(false);
+				toast.error(e.response.data);
+			});
 	}
-
 	return (
 		<LoginPage>
-			<img src={logo} alt=" " />
-			<SyledForm onSubmit={handleSubmit}>
+			<img src={logo} alt="" />
+			<SyledForm onSubmit={HandleSubmit}>
 				<input
 					required
+					disabled={loading}
 					placeholder="email"
-					type="e-mail"
-					onChange={(e) => setLoginEmail(e)}
+					type="email"
+					onChange={(e) => setLoginEmail(e.target.value)}
 				/>
 				<input
 					required
+					disabled={loading}
 					placeholder="senha"
 					type="password"
-					onChange={(e) => setLoginPassword(e)}
+					onChange={(e) => setLoginPassword(e.target.value)}
 				/>
-				<button type="submit">Entrar</button>
-				{validation && <h2>Autentificação Inválida</h2>}
+				<button type="submit">
+					{loading ? <ThreeDots color="white" /> : "Entrar"}
+				</button>
 			</SyledForm>
-			<p onClick={() => navigate("/register")}>
+			<p onClick={() => !loading && navigate("/register")}>
 				Não tem uma conta? Cadastre-se!
 			</p>
 		</LoginPage>
@@ -56,6 +68,7 @@ const LoginPage = styled.div`
 	justify-content: center;
 	align-items: center;
 	height: 100vh;
+	background-color: var(--dark-mode);
 	font-family: "Lexend Deca";
 	img {
 		width: 250px;
@@ -107,6 +120,10 @@ const SyledForm = styled.form`
 		}
 	}
 	button {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+
 		width: 300px;
 		height: 45px;
 		margin: 3px;
