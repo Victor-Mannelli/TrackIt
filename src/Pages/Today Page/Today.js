@@ -1,25 +1,64 @@
-// import { useContext } from "react";
-// import UserContext from "../../CreateContext";
+import { useContext, useEffect, useState } from "react";
+import UserContext from "../../CreateContext";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import TodaysHabits from "./TodaysHabitList";
+import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 
 export default function Today() {
-	// const { loginInfo } = useContext(UserContext);
-	// console.log(loginInfo);
+	const navigate = useNavigate();
+	const { loginInfo } = useContext(UserContext);
+	const [habitList, setHabitList] = useState([]);
+	const [percentage, setPercentage] = useState(0);
+
+	console.log(loginInfo);
+	useEffect(() => {
+		axios
+			.get(
+				"https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/today",
+				{
+					headers: {
+						Authorization: `Bearer ${loginInfo.token}`,
+					},
+				}
+			)
+			.then((e) => setHabitList(e.data));
+	}, [loginInfo.token]);
 
 	return (
 		<TodayPage>
 			<StyledHeader>
 				<h1>TrackIt</h1>
-				{/* <img src={loginInfo.image} alt="" /> */}
+				<img src={loginInfo.image} alt="" />
 			</StyledHeader>
 			<StyledMain>
-				<Today>
-					<h1>Meus Hábitos</h1>
-				</Today>
+				<h1>Segunda, 24/10</h1>
+				<p>Nenhum hábito concluído ainda</p>
+				<HabitsList>
+					{habitList.map((e) => (
+						<TodaysHabits props={e} />
+					))}
+				</HabitsList>
 			</StyledMain>
 			<StyledFooter>
-				<h1>Hábitos</h1>
-				<h1>Histórico</h1>
+				<h1 onClick={() => navigate("/habits")}>Hábitos</h1>
+				<div>
+				<ProgressBar
+						value={percentage}
+						text="Hoje"
+						background
+						backgroundPadding={6}
+						styles={buildStyles({
+							backgroundColor: "#3e98c7",
+							textColor: "#fff",
+							pathColor: "#fff",
+							trailColor: "transparent",
+						})}
+						onClick={() => navigate("/today")}
+					/>
+				</div>
+				<h1 onClick={() => navigate("/history")}>Histórico</h1>
 			</StyledFooter>
 		</TodayPage>
 	);
@@ -64,10 +103,17 @@ const StyledMain = styled.div`
 	padding: 70px 18px;
 	height: 100vh;
 	background: #f2f2f2;
+	h1 {
+		color: #126ba5;
+		font-size: 23px;
+		line-height: 29px;
+		padding-top: 28px;
+	}
 	p {
 		font-size: 18px;
-		line-height: 27px;
-		color: #666666;
+		line-height: 22px;
+		color: #bababa;
+		padding-bottom: 28px;
 	}
 `;
 const StyledFooter = styled.div`
@@ -84,12 +130,26 @@ const StyledFooter = styled.div`
 	padding: 0 30px;
 	background: #ffffff;
 
-	font-size: 18px;
-	line-height: 22px;
-	text-align: center;
-	color: #52b6ff;
-
+	h1 {
+		font-size: 18px;
+		line-height: 22px;
+		text-align: center;
+		color: #52b6ff;
+		cursor: pointer;
+	}
+	div {
+		position: absolute;
+		cursor: pointer;
+	}
 	@media (max-width: 360px) {
 		justify-content: space-between;
 	}
+`;
+const HabitsList = styled.div``;
+
+const ProgressBar = styled(CircularProgressbar)`
+	position: relative;
+	bottom: 30px;
+	width: 100px;
+	height: 100px;
 `;

@@ -6,6 +6,7 @@ import GlobalStyles from "./GlobalStyles";
 import Register from "./Pages/Register";
 import Habits from "./Pages/Habits Page/Habits";
 import Today from "./Pages/Today Page/Today";
+import History from "./Pages/History";
 import { ToastContainer } from "react-toastify";
 
 export default function App() {
@@ -19,6 +20,7 @@ export default function App() {
 					<Route path="/register" element={<Register />} />
 					<Route path="/today" element={<Today />} />
 					<Route path="/habits" element={<Habits />} />
+					<Route path="/history" element={<History />} />
 				</Routes>
 				<ToastContainer />
 				<GlobalStyles />

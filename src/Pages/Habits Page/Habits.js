@@ -1,35 +1,57 @@
 import styled from "styled-components";
-import { useLocation } from "react-router-dom";
 import { BsPlusSquareFill } from "react-icons/bs";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Habit from "./Habit";
+import UserContext from "../../CreateContext";
+import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
+import { useNavigate } from "react-router-dom";
 
 export default function Habits() {
-	const statesReceived = useLocation();
-	console.log(statesReceived);
-    const [habitsList, setHabitsList] = useState([]);
-    function AddingHabits(){
-        setHabitsList()
-    }
+	const { loginInfo } = useContext(UserContext);
+	const navigate = useNavigate();
+	const [habitsList, setHabitsList] = useState([]);
+	const [percentage, setPercentage] = useState(0);
+
+	function AddingHabits() {
+		setHabitsList();
+	}
 	return (
 		<HabitsPage>
 			<StyledHeader>
 				<h1>TrackIt</h1>
-				<img src="" alt="" />
+				<img src={loginInfo.image} alt="" />
 			</StyledHeader>
 			<StyledMain>
 				<MyHabits>
 					<h1>Meus Hábitos</h1>
-					<PlusIcon onClick={() => AddingHabits()}/>
+					<PlusIcon onClick={() => AddingHabits()} />
 				</MyHabits>
-				{habitsList.length === 0 
-                    ? <p>Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para começar a trackear!</p>
-                    : habitsList.map(e => <Habit props={e} />)
-                }
+				{habitsList.length === 0 ? (
+					<p>
+						Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para
+						começar a trackear!
+					</p>
+				) : (
+					habitsList.map((e) => <Habit props={e} />)
+				)}
 			</StyledMain>
 			<StyledFooter>
-				<h1>Hábitos</h1>
-				<h1>Histórico</h1>
+				<h1 onClick={() => navigate("/habits")}>Hábitos</h1>
+				<div onClick={() => navigate("/today")}>
+					<ProgressBar
+						value={percentage}
+						text="Hoje"
+						background
+						backgroundPadding={6}
+						styles={buildStyles({
+							backgroundColor: "#3e98c7",
+							textColor: "#fff",
+							pathColor: "#fff",
+							trailColor: "transparent",
+						})}
+					/>
+				</div>
+				<h1 onClick={() => navigate("/history")}>Histórico</h1>
 			</StyledFooter>
 		</HabitsPage>
 	);
@@ -74,11 +96,11 @@ const StyledMain = styled.div`
 	padding: 70px 18px;
 	height: 100vh;
 	background: #f2f2f2;
-    p {
-        font-size: 18px;
-        line-height: 27px;
-        color: #666666;
-    }
+	p {
+		font-size: 18px;
+		line-height: 27px;
+		color: #666666;
+	}
 `;
 const StyledFooter = styled.div`
 	position: fixed;
@@ -98,10 +120,22 @@ const StyledFooter = styled.div`
 	line-height: 22px;
 	text-align: center;
 	color: #52b6ff;
-
+	h1 {
+		cursor: pointer;
+	}
+	div {
+		position: absolute;
+		cursor: pointer;
+	}
 	@media (max-width: 360px) {
 		justify-content: space-between;
 	}
+`;
+const ProgressBar = styled(CircularProgressbar)`
+	position: relative;
+	bottom: 30px;
+	width: 100px;
+	height: 100px;
 `;
 const MyHabits = styled.div`
 	display: flex;
@@ -109,7 +143,7 @@ const MyHabits = styled.div`
 	justify-content: space-around;
 	align-items: center;
 	height: 85px;
-    color: #126BA5;
+	color: #126ba5;
 
 	@media (max-width: 360px) {
 		justify-content: space-between;
@@ -119,5 +153,5 @@ const PlusIcon = styled(BsPlusSquareFill)`
 	width: 40px;
 	height: 35px;
 	color: #52b6ff;
-    cursor: pointer;
+	cursor: pointer;
 `;
