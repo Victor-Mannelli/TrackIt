@@ -1,13 +1,34 @@
 import { useNavigate } from "react-router-dom";
 import { buildStyles, CircularProgressbar } from "react-circular-progressbar";
-import { useContext, useState } from "react";
-import UserContext from "../CreateContext";
+import { useContext, useState, useEffect } from "react";
+import UserContext from "../../CreateContext";
 import styled from "styled-components";
-export default function History() {
+import axios from "axios";
+import History from "./History";
+
+export default function HistoryScreen() {
 	const navigate = useNavigate();
-	const { loginInfo } = useContext(UserContext);
-	const [percentage, setPercentage] = useState(0);
+	const { loginInfo, percentage} = useContext(UserContext);
+	const [historyList, setHistoryList] = useState([])
+
+	useEffect(() => {
+		axios
+			.get(
+				"https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/history/daily",
+				{
+					headers: {
+						Authorization: `Bearer ${loginInfo.token}`,
+					},
+				}
+			)
+			.then((e) => { setHistoryList(e.data)})
+			.catch((e) => console.log(e.response.data));
+
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
+
 	return (
+
 		<HistoryPage>
 			<StyledHeader>
 				<h1>TrackIt</h1>
@@ -15,7 +36,8 @@ export default function History() {
 			</StyledHeader>
 			<StyledMain>
 				<h1>Histórico</h1>
-				<p>Em breve você poderá ver o histórico dos seus hábitos aqui!</p>
+				{historyList.length === 0 && <p>Em breve você poderá ver o histórico dos seus hábitos aqui!</p>}
+				{historyList.map(e => <History key={e.id} />)}
 			</StyledMain>
 			<StyledFooter>
 				<h1 onClick={() => navigate("/habits")}>Hábitos</h1>

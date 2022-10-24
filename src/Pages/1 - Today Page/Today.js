@@ -8,8 +8,12 @@ import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 
 export default function Today() {
 	const navigate = useNavigate();
-	const { loginInfo, percentage } = useContext(UserContext);
+	const { loginInfo, setPercentage, percentage } = useContext(UserContext);
 	const [refresh, setRefresh] = useState(false);
+	const [todaysHabits, setTodaysHabits] = useState([]);
+	const [aHundredPercent, setAHundredPercent] = useState(0);
+	const [doneNumber, setDoneNumber] = useState([]);
+
 	const weekdays = [
 		"Domingo",
 		"Segunda-feira",
@@ -21,7 +25,22 @@ export default function Today() {
 	];
 	const dayjs = require("dayjs");
 	dayjs.locale("pt-br");
-	const [todaysHabits, setTodaysHabits] = useState([]);
+
+	useEffect(() => {
+		setPercentage((100 * doneNumber.length) / aHundredPercent);
+
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [aHundredPercent]);
+
+	useEffect(() => {
+		setDoneNumber(0);
+		setAHundredPercent(todaysHabits.length);
+		todaysHabits.forEach(
+			(e) => e.done === true && setDoneNumber(doneNumber + 1)
+		);
+
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [todaysHabits]);
 
 	useEffect(() => {
 		axios
@@ -29,15 +48,14 @@ export default function Today() {
 				"https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/today",
 				{
 					headers: {
-						"Authorization": `Bearer ${loginInfo.token}`,
+						Authorization: `Bearer ${loginInfo.token}`,
 					},
 				}
 			)
 			.then((e) => {
 				setTodaysHabits(e.data);
-				console.log(todaysHabits);
 			})
-			.catch(e => console.log(e.response.data))
+			.catch((e) => console.log(e.response.data));
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [refresh]);
@@ -61,7 +79,12 @@ export default function Today() {
 
 				<HabitsList>
 					{todaysHabits.map((e) => (
-						<TodaysHabits key={e.id} props={e} setRefresh={setRefresh} refresh={refresh}/>
+						<TodaysHabits
+							key={e.id}
+							props={e}
+							setRefresh={setRefresh}
+							refresh={refresh}
+						/>
 					))}
 				</HabitsList>
 			</StyledMain>

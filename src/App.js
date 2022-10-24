@@ -4,9 +4,9 @@ import UserContext from "./CreateContext";
 import Login from "./Pages/Login";
 import GlobalStyles from "./GlobalStyles";
 import Register from "./Pages/Register";
-import Habits from "./Pages/Habits Page/Habits";
-import Today from "./Pages/Today Page/Today";
-import History from "./Pages/History";
+import Habits from "./Pages/2 - Habits Page/Habits";
+import Today from "./Pages/1 - Today Page/Today";
+import History from "./Pages/3 - History Page/HistoryPage";
 import { ToastContainer } from "react-toastify";
 import { useEffect } from "react";
 
@@ -25,7 +25,6 @@ export default function App() {
 		<UserContext.Provider
 			value={{
 				loginInfo,
-				setLoginInfo,
 				habitsList,
 				setHabitsList,
 				percentage,

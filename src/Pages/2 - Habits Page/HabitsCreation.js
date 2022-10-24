@@ -6,10 +6,10 @@ import Weekday from "./Weekday";
 
 export default function HabitCreation({ setCreatingStage }) {
 	const weekdays = ["D", "S", "T", "Q", "Q", "S", "S"];
-	const { loginInfo } = useContext(UserContext);
+	const { loginInfo} = useContext(UserContext);
 	const [weekdayIndexList, setWeekdayIndexList] = useState([]);
-	const [habitName, SetHabitName] = useState("")
-	const [state, setState] = useState(false)
+	const [habitName, SetHabitName] = useState("");
+	const [state, setState] = useState(false);
 
 	function HandleSubmit(e) {
 		e.preventDefault();
