@@ -36,8 +36,6 @@ export default function Habits() {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [creatingStage]);
 
-	// console.log(percentage)
-
 	return (
 		<HabitsPage>
 			<StyledHeader>

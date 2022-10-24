@@ -6,14 +6,14 @@ import Weekday from "./Weekday";
 
 export default function HabitCreation({ setCreatingStage }) {
 	const weekdays = ["D", "S", "T", "Q", "Q", "S", "S"];
-	const { loginInfo} = useContext(UserContext);
+	const { loginInfo } = useContext(UserContext);
 	const [weekdayIndexList, setWeekdayIndexList] = useState([]);
 	const [habitName, SetHabitName] = useState("");
 	const [state, setState] = useState(false);
 
 	function HandleSubmit(e) {
 		e.preventDefault();
-		setState(true)
+		setState(true);
 		axios
 			.post(
 				"https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits",
@@ -23,18 +23,18 @@ export default function HabitCreation({ setCreatingStage }) {
 				},
 				{
 					headers: {
-						"Authorization": `Bearer ${loginInfo.token}`,
+						Authorization: `Bearer ${loginInfo.token}`,
 					},
 				}
 			)
 			.then(() => setCreatingStage(false))
-			.catch(e => console.log(e.response.data))
+			.catch((e) => console.log(e.response.data));
 	}
 	return (
 		<HabitCreationWindow>
 			<form onSubmit={HandleSubmit}>
 				<input
-					placeholder="nome do hábito" 
+					placeholder="nome do hábito"
 					required
 					disabled={state}
 					type="text"

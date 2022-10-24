@@ -2,7 +2,6 @@ import { useState } from "react";
 import styled from "styled-components";
 export default function Weekday({ e, index, weekdayIndexList, setWeekdayIndexList, state}) {
 	const [selected, setSelected] = useState(false);
-
 	return (
 		<WeekdayBox
 			selected={selected}
@@ -11,9 +10,9 @@ export default function Weekday({ e, index, weekdayIndexList, setWeekdayIndexLis
 			onClick={() => {
 				selected === true ? setSelected(false) : setSelected(true);
 
-                weekdayIndexList.includes(index + 1) 
-                ? setWeekdayIndexList(weekdayIndexList.filter(e => e !== index + 1))
-                : setWeekdayIndexList([...weekdayIndexList, index + 1])
+                weekdayIndexList.includes(index) 
+                ? setWeekdayIndexList(weekdayIndexList.filter(e => e !== index))
+                : setWeekdayIndexList([...weekdayIndexList, index])
 			}}
 		>
 			{e}

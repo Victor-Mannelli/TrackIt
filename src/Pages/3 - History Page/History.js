@@ -6,7 +6,6 @@ export default function History({ props }) {
 	return (
 		<HistoryHabits>
 			<h1> {props.name} </h1>
-            {/* <h1> {props.date} </h1> */}
 			<WeekDays>
 				{weekdays.map((e, i) => (
 					<Weekday key={i} index={i} days={props.weekDay}>

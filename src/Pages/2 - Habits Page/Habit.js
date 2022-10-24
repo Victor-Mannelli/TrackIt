@@ -90,11 +90,11 @@ const Weekday = styled.div`
 	border: 1px solid #d5d5d5;
 	border-radius: 5px;
 	background-color: ${(props) =>
-		props.days.includes(props.index + 1) ? "#cfcfcf" : "#ffffff"};
+		props.days.includes(props.index) ? "#cfcfcf" : "#ffffff"};
 	cursor: default;
 
 	color: ${(props) =>
-		props.days.includes(props.index + 1) ? "#ffffff" : "#dbdbdb"};
+		props.days.includes(props.index) ? "#ffffff" : "#dbdbdb"};
 	font-family: "Lexend Deca";
 	font-size: 20px;
 	line-height: 25px;
