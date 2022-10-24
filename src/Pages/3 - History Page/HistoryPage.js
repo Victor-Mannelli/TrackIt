@@ -103,6 +103,7 @@ const StyledMainH1 = styled.h1`
 	font-size: 23px;
 	line-height: 29px;
 	padding: 28px 0;
+	cursor: default;
 `;
 const StyledMain = styled.div`
 	display: flex;

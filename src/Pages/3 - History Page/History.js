@@ -3,11 +3,10 @@ import { BsFillCheckSquareFill } from "react-icons/bs";
 
 export default function History({ props }) {
     const weekdays = ["D", "S", "T", "Q", "Q", "S", "S"];
-    console.log(props)
 	return (
 		<HistoryHabits>
 			<h1> {props.name} </h1>
-            <h1> {props.date} </h1>
+            {/* <h1> {props.date} </h1> */}
 			<WeekDays>
 				{weekdays.map((e, i) => (
 					<Weekday key={i} index={i} days={props.weekDay}>
@@ -37,6 +36,7 @@ const HistoryHabits = styled.div`
 	margin: 5px 18px;
 	background-color: white;
 	border-radius: 5px;
+	cursor: default;
 	h1 {
 		font-size: 19.976px;
 		line-height: 25px;

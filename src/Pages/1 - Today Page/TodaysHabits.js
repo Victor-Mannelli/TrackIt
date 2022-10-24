@@ -8,13 +8,14 @@ export default function TodaysHabits({ props, getTodayHabits }) {
 	const { loginInfo } = useContext(UserContext);
 
 	useEffect(() => {
-		Checking()
+		getTodayHabits()
 	  
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
 	
 
 	function Checking() {
+		console.log("checking")
 		axios
 			.post(
 				`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${props.id}/check`, {},

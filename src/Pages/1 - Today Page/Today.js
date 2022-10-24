@@ -39,7 +39,6 @@ export default function Today() {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [aHundredPercent, doneNumber, ]);
 
-	console.log();
 	function getTodayHabits() {
 		axios
 			.get(
