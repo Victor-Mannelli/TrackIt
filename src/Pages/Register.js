@@ -84,7 +84,7 @@ const RegisterPage = styled.div`
 	align-items: center;
 	height: 100vh;
 	font-family: "Lexend Deca";
-	background-color: #525960;
+	background-color: var(--light-mode);
 	img {
 		width: 250px;
 		height: 250px;

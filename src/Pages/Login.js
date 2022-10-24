@@ -77,7 +77,7 @@ const LoginPage = styled.div`
 	justify-content: center;
 	align-items: center;
 	height: 100vh;
-	background-color: var(--white-mode);
+	background-color: var(--light-mode);
 	font-family: "Lexend Deca";
 	img {
 		width: 250px;
@@ -124,7 +124,6 @@ const StyledFormInput = styled.input`
 		}
 	}
 `;
-
 const SyledForm = styled.form`
 	display: flex;
 	flex-direction: column;

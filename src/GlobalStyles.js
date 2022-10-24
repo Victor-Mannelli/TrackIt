@@ -56,7 +56,7 @@ const GlobalStyle = createGlobalStyle`
         box-sizing: border-box;
     }
     :root {
-        --white-color: #ffffff;
+        --light-mode: #ffffff;
         --dark-mode: #525960;
     }
 `
