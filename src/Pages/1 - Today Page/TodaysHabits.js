@@ -1,31 +1,38 @@
 import { BsFillCheckSquareFill } from "react-icons/bs";
 import styled from "styled-components";
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import axios from "axios";
 import UserContext from "../../CreateContext";
 
 export default function TodaysHabits({ props, getTodayHabits }) {
 	const { loginInfo } = useContext(UserContext);
-
-	useEffect(() => {
-		getTodayHabits()
-	  
-	// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [])
 	
-
 	function Checking() {
-		console.log("checking")
-		axios
-			.post(
-				`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${props.id}/check`, {},
-				{
-					headers: {
-						"Authorization": `Bearer ${loginInfo.token}`,
-					},
-				}
-			)
-			.then(() => getTodayHabits())
+		if (!props.done) {
+			axios
+				.post(
+					`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${props.id}/check`,
+					{},
+					{
+						headers: {
+							Authorization: `Bearer ${loginInfo.token}`,
+						},
+					}
+				)
+				.then(() => getTodayHabits());
+		} else {
+			axios
+				.post(
+					`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${props.id}/uncheck`,
+					{},
+					{
+						headers: {
+							Authorization: `Bearer ${loginInfo.token}`,
+						},
+					}
+				)
+				.then(() => getTodayHabits());
+		}
 	}
 	return (
 		<TodayHabit>
@@ -40,10 +47,7 @@ export default function TodaysHabits({ props, getTodayHabits }) {
 					Seu recorde: <span> {props.highestSequence} </span>{" "}
 				</p>
 			</Description>
-			<CheckIcon 
-				onClick={() => Checking()}
-				isDone={props.done} 
-				/>
+			<CheckIcon onClick={() => Checking()} isDone={props.done} />
 		</TodayHabit>
 	);
 }

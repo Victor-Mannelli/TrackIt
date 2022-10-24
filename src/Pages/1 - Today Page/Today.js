@@ -10,8 +10,6 @@ export default function Today() {
 	const navigate = useNavigate();
 	const { loginInfo, setPercentage, percentage } = useContext(UserContext);
 	const [todaysHabits, setTodaysHabits] = useState([]);
-	const [aHundredPercent, setAHundredPercent] = useState(0);
-	const [doneNumber, setDoneNumber] = useState(0);
 	const weekdays = [
 		"Domingo",
 		"Segunda-feira",
@@ -23,21 +21,6 @@ export default function Today() {
 	];
 	const dayjs = require("dayjs");
 	dayjs.locale("pt-br");
-
-	useEffect(() => {
-		setAHundredPercent(todaysHabits.length);
-		todaysHabits.forEach(
-			(e) => e.done === true && setDoneNumber(doneNumber + 1)
-		);
-
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [todaysHabits, ]);
-
-	useEffect(() => {
-		setPercentage(Math.floor((100 * doneNumber) / aHundredPercent));
-
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [aHundredPercent, doneNumber, ]);
 
 	function getTodayHabits() {
 		axios
@@ -51,6 +34,7 @@ export default function Today() {
 			)
 			.then((e) => {
 				setTodaysHabits(e.data);
+				setPercentage(Math.floor((100 * e.data.filter(e => e.done).length) / e.data.length));
 			})
 			.catch((e) => console.log(e.response.data));
 	}

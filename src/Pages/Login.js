@@ -18,7 +18,7 @@ export default function Login() {
 		localStorage.getItem("userInfo") !== null && navigate("/today")
 
 	// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [])
+	}, []);
 
 	function HandleSubmit(event) {
 		event.preventDefault();
@@ -32,36 +32,36 @@ export default function Login() {
 				}
 			)
 			.then(({ data }) => {
-				localStorage.setItem("userInfo", JSON.stringify(data))
-				setLoginInfo(data)
+				localStorage.setItem("userInfo", JSON.stringify(data));
+				setLoginInfo(data);
 				navigate("/today");
 			})
 			.catch((e) => {
 				setLoading(false);
-				e.response.data.message === 'Usuário e/ou senha inválidos!' 
-				? toast.error(e.response.data.message, { position: "top-center" })
-				: toast.error(e.response.data.details[0], { position: "top-center" });
+				e.response.data.message === "Usuário e/ou senha inválidos!"
+					? toast.error(e.response.data.message, { position: "top-center" })
+					: toast.error(e.response.data.details[0], { position: "top-center" });
 			});
 	}
 	return (
 		<LoginPage>
 			<img src={logo} alt="" />
 			<SyledForm onSubmit={HandleSubmit}>
-				<input
+				<StyledFormInput
 					required
 					disabled={loading}
 					placeholder="email"
 					type="email"
 					onChange={(e) => setLoginEmail(e.target.value)}
 				/>
-				<input
+				<StyledFormInput
 					required
 					disabled={loading}
 					placeholder="senha"
 					type="password"
 					onChange={(e) => setLoginPassword(e.target.value)}
 				/>
-				<button type="submit">
+				<button type="submit" disabled={loading}>
 					{loading ? <ThreeDots color="white" /> : "Entrar"}
 				</button>
 			</SyledForm>
@@ -77,7 +77,7 @@ const LoginPage = styled.div`
 	justify-content: center;
 	align-items: center;
 	height: 100vh;
-	background-color: var(--dark-mode);
+	background-color: var(--white-mode);
 	font-family: "Lexend Deca";
 	img {
 		width: 250px;
@@ -99,6 +99,32 @@ const LoginPage = styled.div`
 		}
 	}
 `;
+const StyledFormInput = styled.input`
+	height: 45px;
+	width: 300px;
+	background: ${(props) => (props.disabled ? "#f2f2f2" : "#ffffff")};
+	border: 1px solid #d4d4d4;
+	border-radius: 5px;
+	margin: 3px;
+	padding: 0 15px;
+	color: gray;
+	font-size: 19.976px;
+	line-height: 25px;
+	outline: none;
+	${(props) => console.log(props)};
+	::placeholder {
+		color: #dbdbdb;
+		font-size: 19.976px;
+		line-height: 25px;
+	}
+
+	@media (max-width: 360px) {
+		input {
+			width: 80vw;
+		}
+	}
+`;
+
 const SyledForm = styled.form`
 	display: flex;
 	flex-direction: column;
@@ -108,25 +134,6 @@ const SyledForm = styled.form`
 		line-height: 17px;
 		text-align: center;
 		color: red;
-	}
-	input {
-		height: 45px;
-		width: 300px;
-		background: #ffffff;
-		border: 1px solid #d4d4d4;
-		border-radius: 5px;
-		margin: 3px;
-		padding: 0 15px;
-		color: gray;
-		font-size: 19.976px;
-		line-height: 25px;
-		outline: none;
-
-		::placeholder {
-			color: #dbdbdb;
-			font-size: 19.976px;
-			line-height: 25px;
-		}
 	}
 	button {
 		display: flex;
@@ -145,7 +152,6 @@ const SyledForm = styled.form`
 		line-height: 26px;
 	}
 	@media (max-width: 360px) {
-		input,
 		button {
 			width: 80vw;
 		}
