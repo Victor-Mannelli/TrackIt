@@ -9,11 +9,9 @@ import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 export default function Today() {
 	const navigate = useNavigate();
 	const { loginInfo, setPercentage, percentage } = useContext(UserContext);
-	const [refresh, setRefresh] = useState(false);
 	const [todaysHabits, setTodaysHabits] = useState([]);
 	const [aHundredPercent, setAHundredPercent] = useState(0);
-	const [doneNumber, setDoneNumber] = useState([]);
-
+	const [doneNumber, setDoneNumber] = useState(0);
 	const weekdays = [
 		"Domingo",
 		"Segunda-feira",
@@ -27,22 +25,22 @@ export default function Today() {
 	dayjs.locale("pt-br");
 
 	useEffect(() => {
-		setPercentage((100 * doneNumber.length) / aHundredPercent);
-
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [aHundredPercent]);
-
-	useEffect(() => {
-		setDoneNumber(0);
 		setAHundredPercent(todaysHabits.length);
 		todaysHabits.forEach(
 			(e) => e.done === true && setDoneNumber(doneNumber + 1)
 		);
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [todaysHabits]);
+	}, [todaysHabits, ]);
 
 	useEffect(() => {
+		setPercentage(Math.floor((100 * doneNumber) / aHundredPercent));
+
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [aHundredPercent, doneNumber, ]);
+
+	console.log();
+	function getTodayHabits() {
 		axios
 			.get(
 				"https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/today",
@@ -56,9 +54,12 @@ export default function Today() {
 				setTodaysHabits(e.data);
 			})
 			.catch((e) => console.log(e.response.data));
+	}
+	useEffect(() => {
+		getTodayHabits()
 
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [refresh]);
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
 	return (
 		<TodayPage>
@@ -71,7 +72,7 @@ export default function Today() {
 					{" "}
 					{weekdays[dayjs().day()]}, {dayjs().date()}/{dayjs().month() + 1}
 				</MainTitle>
-				{percentage === 0 ? (
+				{isNaN(percentage) ? (
 					<MainParagraph>Nenhum hábito concluído ainda</MainParagraph>
 				) : (
 					<MainParagraph>{percentage}% dos hábitos concluídos</MainParagraph>
@@ -82,8 +83,7 @@ export default function Today() {
 						<TodaysHabits
 							key={e.id}
 							props={e}
-							setRefresh={setRefresh}
-							refresh={refresh}
+							getTodayHabits={getTodayHabits}
 						/>
 					))}
 				</HabitsList>
@@ -92,7 +92,7 @@ export default function Today() {
 				<h1 onClick={() => navigate("/habits")}>Hábitos</h1>
 				<div onClick={() => navigate("/today")}>
 					<ProgressBar
-						value={percentage}
+						value={isNaN(percentage) ? 0 : percentage}
 						text="Hoje"
 						background
 						backgroundPadding={6}

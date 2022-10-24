@@ -18,7 +18,7 @@ export default function Login() {
 		localStorage.getItem("userInfo") !== null && navigate("/today")
 
 	// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [setLoginInfo])
+	}, [])
 
 	function HandleSubmit(event) {
 		event.preventDefault();
@@ -33,6 +33,7 @@ export default function Login() {
 			)
 			.then(({ data }) => {
 				localStorage.setItem("userInfo", JSON.stringify(data))
+				setLoginInfo(data)
 				navigate("/today");
 			})
 			.catch((e) => {

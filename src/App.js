@@ -8,27 +8,24 @@ import Habits from "./Pages/2 - Habits Page/Habits";
 import Today from "./Pages/1 - Today Page/Today";
 import History from "./Pages/3 - History Page/HistoryPage";
 import { ToastContainer } from "react-toastify";
-import { useEffect } from "react";
 
 export default function App() {
-	const [loginInfo, setLoginInfo] = useState("");
+	const [loginInfo, setLoginInfo] = useState(localStorage.getItem("userInfo") !== null ? JSON.parse(localStorage.getItem("userInfo")) : "");
 	const [habitsList, setHabitsList] = useState([]);
 	const [percentage, setPercentage] = useState(0);
-
-	useEffect(() => {
-		if (localStorage.getItem("userInfo") !== null ){
-			setLoginInfo(JSON.parse(localStorage.getItem("userInfo")));
-		}
-	}, [])
+	const [habitWasDeleted, setHabitWasDeleted] = useState(false)
 	
 	return (
 		<UserContext.Provider
 			value={{
 				loginInfo,
+				setLoginInfo,
 				habitsList,
 				setHabitsList,
 				percentage,
 				setPercentage,
+				habitWasDeleted,
+				setHabitWasDeleted
 			}}
 		>
 			<BrowserRouter>

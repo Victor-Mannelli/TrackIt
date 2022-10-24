@@ -8,8 +8,8 @@ import History from "./History";
 
 export default function HistoryScreen() {
 	const navigate = useNavigate();
-	const { loginInfo, percentage} = useContext(UserContext);
-	const [historyList, setHistoryList] = useState([])
+	const { loginInfo, percentage } = useContext(UserContext);
+	const [historyList, setHistoryList] = useState([]);
 
 	useEffect(() => {
 		axios
@@ -21,29 +21,31 @@ export default function HistoryScreen() {
 					},
 				}
 			)
-			.then((e) => { setHistoryList(e.data)})
+			.then((e) => e.data.length !== 0 && setHistoryList(e.data[0].habits))
 			.catch((e) => console.log(e.response.data));
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
-
 	return (
-
 		<HistoryPage>
 			<StyledHeader>
 				<h1>TrackIt</h1>
 				<img src={loginInfo.image} alt="" />
 			</StyledHeader>
 			<StyledMain>
-				<h1>Histórico</h1>
-				{historyList.length === 0 && <p>Em breve você poderá ver o histórico dos seus hábitos aqui!</p>}
-				{historyList.map(e => <History key={e.id} />)}
+				<StyledMainH1>Histórico</StyledMainH1>
+				{historyList.length === 0 && (
+					<p>Em breve você poderá ver o histórico dos seus hábitos aqui!</p>
+				)}
+				{historyList.map((e) => (
+					<History props={e} key={e.id} />
+				))}
 			</StyledMain>
 			<StyledFooter>
 				<h1 onClick={() => navigate("/habits")}>Hábitos</h1>
 				<div onClick={() => navigate("/today")}>
 					<ProgressBar
-						value={percentage}
+						value={isNaN(percentage) ? 0 : percentage}
 						text="Hoje"
 						background
 						backgroundPadding={6}
@@ -96,21 +98,29 @@ const StyledHeader = styled.div`
 		justify-content: space-between;
 	}
 `;
+const StyledMainH1 = styled.h1`
+	color: #126ba5;
+	font-size: 23px;
+	line-height: 29px;
+	padding: 28px 0;
+`;
 const StyledMain = styled.div`
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+
 	padding: 70px 18px;
 	height: 100vh;
 	background: #f2f2f2;
-	h1 {
-		color: #126ba5;
-		font-size: 23px;
-		line-height: 29px;
-		padding-top: 28px;
-	}
+
 	p {
 		font-size: 18px;
 		line-height: 22px;
 		color: #666666;
 		padding-bottom: 28px;
+	}
+	@media (max-width: 360px){
+		align-items: flex-start;
 	}
 `;
 const StyledFooter = styled.div`

@@ -13,9 +13,8 @@ export default function Habits() {
 	const navigate = useNavigate();
 	const [creatingStage, setCreatingStage] = useState(false);
 	const [habitsListInfo, setHabitsListInfo] = useState([]);
-	const [refresh, setRefresh] = useState(false);
 
-	useEffect(() => {
+	function getHabits(){
 		axios
 			.get(
 				"https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits",
@@ -29,8 +28,15 @@ export default function Habits() {
 				setHabitsListInfo(e.data);
 			})
 			.catch(e => console.log(e.response.data))
+	}
+	
+	useEffect(() => {
+		getHabits()
+
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [creatingStage, refresh]);
+	}, [creatingStage]);
+
+	// console.log(percentage)
 
 	return (
 		<HabitsPage>
@@ -60,8 +66,7 @@ export default function Habits() {
 							title={e.name}
 							days={e.days}
 							setHabitsListInfo={setHabitsListInfo}
-							setRefresh={setRefresh}
-							refresh={refresh}
+							getHabits={getHabits}
 						/>
 					))}
 				</MyHabits>
@@ -70,7 +75,7 @@ export default function Habits() {
 				<h1 onClick={() => navigate("/habits")}>Hábitos</h1>
 				<div onClick={() => navigate("/today")}>
 					<ProgressBar
-						value={percentage}
+						value={isNaN(percentage) ? 0 : percentage}
 						text="Hoje"
 						background
 						backgroundPadding={6}

@@ -4,12 +4,13 @@ import { BsTrash } from "react-icons/bs";
 import axios from "axios";
 import UserContext from "../../CreateContext";
 
-export default function Habit({ title, days, id, setRefresh, refresh }) {
-	const { loginInfo } = useContext(UserContext);
+export default function Habit({ title, days, id, getHabits }) {
+	const { loginInfo, habitWasDeleted, setHabitWasDeleted } = useContext(UserContext);
 	const weekdays = ["D", "S", "T", "Q", "Q", "S", "S"];
 	const [deleting, setDeleting] = useState(false);
 
 	function Delete(id) {
+		setHabitWasDeleted(!habitWasDeleted)
 		axios.delete(
 			`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${id}`,
 			{
@@ -18,7 +19,7 @@ export default function Habit({ title, days, id, setRefresh, refresh }) {
 				},
 			}
 		)
-		.then(setRefresh(!refresh))
+		.then(() => getHabits())
 		.catch(e => console.log(e.response.data))
 	}
 	return (
@@ -32,7 +33,7 @@ export default function Habit({ title, days, id, setRefresh, refresh }) {
 				))}
 			</WeekDays>
 			{deleting ? (
-				<button onClick={() => Delete(id)}> Confirmar Exclusão</button>
+				<button onClick={() => Delete(id)}> Confirmar Exclusão </button>
 			) : (
 				<Trash onClick={() => setDeleting(true)} />
 			)}
