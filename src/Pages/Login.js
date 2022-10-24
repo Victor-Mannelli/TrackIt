@@ -1,10 +1,10 @@
 import logo from "./1 - Pages Files/Logo.png";
 import styled from "styled-components";
 import axios from "axios";
-import { useState, useContext } from "react";
+import UserContext from "../CreateContext";
+import { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ThreeDots } from "react-loader-spinner";
-import UserContext from "../CreateContext";
 import { toast } from "react-toastify";
 
 export default function Login() {
@@ -13,6 +13,12 @@ export default function Login() {
 	const [loginEmail, setLoginEmail] = useState("");
 	const [loginPassword, setLoginPassword] = useState("");
 	const [loading, setLoading] = useState(false);
+
+	useEffect(() => {
+		localStorage.getItem("userInfo") !== null && navigate("/today")
+
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [setLoginInfo])
 
 	function HandleSubmit(event) {
 		event.preventDefault();
@@ -26,7 +32,7 @@ export default function Login() {
 				}
 			)
 			.then(({ data }) => {
-				setLoginInfo(data);
+				localStorage.setItem("userInfo", JSON.stringify(data))
 				navigate("/today");
 			})
 			.catch((e) => {

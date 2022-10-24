@@ -1,20 +1,37 @@
 import styled from "styled-components";
 import { BsPlusSquareFill } from "react-icons/bs";
-import { useContext, useState } from "react";
-import Habit from "./Habit";
-import UserContext from "../../CreateContext";
+import { useContext, useState, useEffect } from "react";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
+import UserContext from "../../CreateContext";
 import { useNavigate } from "react-router-dom";
+import HabitCreation from "./HabitsCreation";
+import Habit from "./Habit";
+import axios from "axios";
 
 export default function Habits() {
-	const { loginInfo } = useContext(UserContext);
+	const { loginInfo, percentage } = useContext(UserContext);
 	const navigate = useNavigate();
-	const [habitsList, setHabitsList] = useState([]);
-	const [percentage, setPercentage] = useState(0);
+	const [creatingStage, setCreatingStage] = useState(false);
+	const [habitsListInfo, setHabitsListInfo] = useState([]);
+	const [refresh, setRefresh] = useState(false);
 
-	function AddingHabits() {
-		setHabitsList();
-	}
+	useEffect(() => {
+		axios
+			.get(
+				"https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits",
+				{
+					headers: {
+						"Authorization": `Bearer ${loginInfo.token}`,
+					},
+				}
+			)
+			.then((e) => {
+				setHabitsListInfo(e.data);
+			})
+			.catch(e => console.log(e.response.data))
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [creatingStage, refresh]);
+
 	return (
 		<HabitsPage>
 			<StyledHeader>
@@ -22,18 +39,32 @@ export default function Habits() {
 				<img src={loginInfo.image} alt="" />
 			</StyledHeader>
 			<StyledMain>
-				<MyHabits>
+				<MyHabitsTitle>
 					<h1>Meus Hábitos</h1>
-					<PlusIcon onClick={() => AddingHabits()} />
+					<PlusIcon onClick={() => setCreatingStage(!creatingStage)} />
+				</MyHabitsTitle>
+				<MyHabits>
+					{creatingStage && (
+						<HabitCreation setCreatingStage={setCreatingStage} />
+					)}
+					{habitsListInfo.length === 0 && (
+						<p>
+							Você não tem nenhum hábito cadastrado ainda. Adicione um hábito
+							para começar a trackear!
+						</p>
+					)}
+					{habitsListInfo.map((e) => (
+						<Habit
+							key={e.id}
+							id={e.id}
+							title={e.name}
+							days={e.days}
+							setHabitsListInfo={setHabitsListInfo}
+							setRefresh={setRefresh}
+							refresh={refresh}
+						/>
+					))}
 				</MyHabits>
-				{habitsList.length === 0 ? (
-					<p>
-						Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para
-						começar a trackear!
-					</p>
-				) : (
-					habitsList.map((e) => <Habit props={e} />)
-				)}
 			</StyledMain>
 			<StyledFooter>
 				<h1 onClick={() => navigate("/habits")}>Hábitos</h1>
@@ -45,8 +76,8 @@ export default function Habits() {
 						backgroundPadding={6}
 						styles={buildStyles({
 							backgroundColor: "#3e98c7",
-							textColor: "#fff",
-							pathColor: "#fff",
+							textColor: "#ffffff",
+							pathColor: "#ffffff",
 							trailColor: "transparent",
 						})}
 					/>
@@ -63,6 +94,7 @@ const HabitsPage = styled.div`
 `;
 const StyledHeader = styled.div`
 	position: fixed;
+	z-index: 2;
 	top: 0;
 	left: 0;
 
@@ -94,13 +126,8 @@ const StyledHeader = styled.div`
 `;
 const StyledMain = styled.div`
 	padding: 70px 18px;
-	height: 100vh;
+	min-height: 100vh;
 	background: #f2f2f2;
-	p {
-		font-size: 18px;
-		line-height: 27px;
-		color: #666666;
-	}
 `;
 const StyledFooter = styled.div`
 	position: fixed;
@@ -116,15 +143,11 @@ const StyledFooter = styled.div`
 	padding: 0 30px;
 	background: #ffffff;
 
-	font-size: 18px;
+	font-size: 1.125rem;
 	line-height: 22px;
 	text-align: center;
 	color: #52b6ff;
 	h1 {
-		cursor: pointer;
-	}
-	div {
-		position: absolute;
 		cursor: pointer;
 	}
 	@media (max-width: 360px) {
@@ -132,12 +155,18 @@ const StyledFooter = styled.div`
 	}
 `;
 const ProgressBar = styled(CircularProgressbar)`
-	position: relative;
-	bottom: 30px;
 	width: 100px;
 	height: 100px;
+	margin: 0 auto 70px auto;
+	cursor: pointer;
 `;
-const MyHabits = styled.div`
+const PlusIcon = styled(BsPlusSquareFill)`
+	width: 40px;
+	height: 35px;
+	color: #52b6ff;
+	cursor: pointer;
+`;
+const MyHabitsTitle = styled.div`
 	display: flex;
 	flex-direction: row;
 	justify-content: space-around;
@@ -149,9 +178,23 @@ const MyHabits = styled.div`
 		justify-content: space-between;
 	}
 `;
-const PlusIcon = styled(BsPlusSquareFill)`
-	width: 40px;
-	height: 35px;
-	color: #52b6ff;
-	cursor: pointer;
+const MyHabits = styled.div`
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding-bottom: 30px;
+	p {
+		width: 70vw;
+		text-align: center;
+		font-size: 18px;
+		line-height: 27px;
+		color: #666666;
+	}
+
+	@media (max-width: 360px) {
+		p {
+			width: 100%;
+			text-align: start;
+		}
+	}
 `;

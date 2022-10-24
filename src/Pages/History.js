@@ -4,23 +4,23 @@ import { useContext, useState } from "react";
 import UserContext from "../CreateContext";
 import styled from "styled-components";
 export default function History() {
-    const navigate = useNavigate();
-    const { loginInfo } = useContext(UserContext);
-    const [percentage, setPercentage] = useState(0)
-    return (
-        <HistoryPage>
+	const navigate = useNavigate();
+	const { loginInfo } = useContext(UserContext);
+	const [percentage, setPercentage] = useState(0);
+	return (
+		<HistoryPage>
 			<StyledHeader>
 				<h1>TrackIt</h1>
 				<img src={loginInfo.image} alt="" />
 			</StyledHeader>
 			<StyledMain>
 				<h1>Histórico</h1>
-				<p> Em breve você poderá ver o histórico dos seus hábitos aqui! </p>
+				<p>Em breve você poderá ver o histórico dos seus hábitos aqui!</p>
 			</StyledMain>
 			<StyledFooter>
 				<h1 onClick={() => navigate("/habits")}>Hábitos</h1>
-				<div>
-				<ProgressBar
+				<div onClick={() => navigate("/today")}>
+					<ProgressBar
 						value={percentage}
 						text="Hoje"
 						background
@@ -31,13 +31,12 @@ export default function History() {
 							pathColor: "#fff",
 							trailColor: "transparent",
 						})}
-						onClick={() => navigate("/today")}
 					/>
 				</div>
 				<h1 onClick={() => navigate("/history")}>Histórico</h1>
 			</StyledFooter>
 		</HistoryPage>
-    )
+	);
 }
 const HistoryPage = styled.div`
 	display: flex;
@@ -113,17 +112,12 @@ const StyledFooter = styled.div`
 		color: #52b6ff;
 		cursor: pointer;
 	}
-	div {
-		position: absolute;
-		cursor: pointer;
-	}
 	@media (max-width: 360px) {
 		justify-content: space-between;
 	}
 `;
 const ProgressBar = styled(CircularProgressbar)`
-	position: relative;
-	bottom: 30px;
-	width: 100px;
+	margin: 0 auto 70px auto;
 	height: 100px;
+	cursor: pointer;
 `;

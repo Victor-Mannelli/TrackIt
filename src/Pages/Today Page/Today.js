@@ -1,30 +1,46 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import UserContext from "../../CreateContext";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import TodaysHabits from "./TodaysHabitList";
+import TodaysHabits from "./TodaysHabits";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 
 export default function Today() {
 	const navigate = useNavigate();
-	const { loginInfo } = useContext(UserContext);
-	const [habitList, setHabitList] = useState([]);
-	const [percentage, setPercentage] = useState(0);
+	const { loginInfo, percentage } = useContext(UserContext);
+	const [refresh, setRefresh] = useState(false);
+	const weekdays = [
+		"Domingo",
+		"Segunda-feira",
+		"Terça-feira",
+		"Quarta-feira",
+		"Quinta-feira",
+		"Sexta-feira",
+		"Sábado",
+	];
+	const dayjs = require("dayjs");
+	dayjs.locale("pt-br");
+	const [todaysHabits, setTodaysHabits] = useState([]);
 
-	console.log(loginInfo);
 	useEffect(() => {
 		axios
 			.get(
 				"https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/today",
 				{
 					headers: {
-						Authorization: `Bearer ${loginInfo.token}`,
+						"Authorization": `Bearer ${loginInfo.token}`,
 					},
 				}
 			)
-			.then((e) => setHabitList(e.data));
-	}, [loginInfo.token]);
+			.then((e) => {
+				setTodaysHabits(e.data);
+				console.log(todaysHabits);
+			})
+			.catch(e => console.log(e.response.data))
+
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [refresh]);
 
 	return (
 		<TodayPage>
@@ -33,18 +49,26 @@ export default function Today() {
 				<img src={loginInfo.image} alt="" />
 			</StyledHeader>
 			<StyledMain>
-				<h1>Segunda, 24/10</h1>
-				<p>Nenhum hábito concluído ainda</p>
+				<MainTitle>
+					{" "}
+					{weekdays[dayjs().day()]}, {dayjs().date()}/{dayjs().month() + 1}
+				</MainTitle>
+				{percentage === 0 ? (
+					<MainParagraph>Nenhum hábito concluído ainda</MainParagraph>
+				) : (
+					<MainParagraph>{percentage}% dos hábitos concluídos</MainParagraph>
+				)}
+
 				<HabitsList>
-					{habitList.map((e) => (
-						<TodaysHabits props={e} />
+					{todaysHabits.map((e) => (
+						<TodaysHabits key={e.id} props={e} setRefresh={setRefresh} refresh={refresh}/>
 					))}
 				</HabitsList>
 			</StyledMain>
 			<StyledFooter>
 				<h1 onClick={() => navigate("/habits")}>Hábitos</h1>
-				<div>
-				<ProgressBar
+				<div onClick={() => navigate("/today")}>
+					<ProgressBar
 						value={percentage}
 						text="Hoje"
 						background
@@ -55,7 +79,6 @@ export default function Today() {
 							pathColor: "#fff",
 							trailColor: "transparent",
 						})}
-						onClick={() => navigate("/today")}
 					/>
 				</div>
 				<h1 onClick={() => navigate("/history")}>Histórico</h1>
@@ -99,22 +122,22 @@ const StyledHeader = styled.div`
 		justify-content: space-between;
 	}
 `;
+const MainTitle = styled.h1`
+	color: #126ba5;
+	font-size: 23px;
+	line-height: 29px;
+	padding-top: 28px;
+`;
+const MainParagraph = styled.p`
+	font-size: 18px;
+	line-height: 22px;
+	color: #bababa;
+	padding-bottom: 28px;
+`;
 const StyledMain = styled.div`
 	padding: 70px 18px;
 	height: 100vh;
 	background: #f2f2f2;
-	h1 {
-		color: #126ba5;
-		font-size: 23px;
-		line-height: 29px;
-		padding-top: 28px;
-	}
-	p {
-		font-size: 18px;
-		line-height: 22px;
-		color: #bababa;
-		padding-bottom: 28px;
-	}
 `;
 const StyledFooter = styled.div`
 	position: fixed;
@@ -137,10 +160,6 @@ const StyledFooter = styled.div`
 		color: #52b6ff;
 		cursor: pointer;
 	}
-	div {
-		position: absolute;
-		cursor: pointer;
-	}
 	@media (max-width: 360px) {
 		justify-content: space-between;
 	}
@@ -148,8 +167,7 @@ const StyledFooter = styled.div`
 const HabitsList = styled.div``;
 
 const ProgressBar = styled(CircularProgressbar)`
-	position: relative;
-	bottom: 30px;
-	width: 100px;
+	margin: 0 auto 70px auto;
 	height: 100px;
+	cursor: pointer;
 `;
